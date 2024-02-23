@@ -1,0 +1,79 @@
+body {
+    font-size: 14px;
+    line-height: 22.4px;
+    font-family: sans-serif;
+    color: black;
+    margin-left: 70px;
+    margin-right: 70px;
+   
+
+}
+
+.language {
+    margin-left: 627px;
+}
+
+.menu_bar ul {
+    list-style: none;
+    display: flex;
+    text-decoration: none;
+    
+
+}
+
+.menu_bar li {
+    padding: 5px 10px;
+    text-decoration: none;
+    
+    
+}
+
+.menu_bar2 {
+    margin-left: 650px;
+    display: flex;
+
+}
+.menu_bar {
+    height: 20px;
+}
+
+.image {
+    margin-top: -110px;
+    margin-right: 0px;
+    padding-left: 20px;
+
+}
+.paragraph1 {
+    margin-right: 330px;
+}
+
+.paragraph2 {
+    margin-right: 330px;
+}
+.heading1 {
+    font-family: 'Linux Libertine','Georgia','Times',serif;
+    line-height: 1.375;
+    font-weight: normal;
+}
+.heading2 {
+    margin-top: -140px;
+    font-family: 'Linux Libertine','Georgia','Times',serif;
+    line-height: 1.375;
+    font-weight: normal;
+    
+}
+
+.hr1 {
+    margin-right: 300px;
+}
+.heading4 {
+    font-family: 'Linux Libertine','Georgia','Times',serif;
+    line-height: 1.375;
+    font-size: 1.5em;
+    font-weight: normal;
+}
+.code {
+    background-color: #f8f9fa;
+    color: #000000;
+    border: 1px solid #eaecf0;
+}

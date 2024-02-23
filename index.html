@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="header">
+        <table>
+            <tr>
+                <td>
+                    <h1 class="heading1">Dining philosophers problem</h1>
+                </td>
+                <td>
+                    <select class="language">
+                        <option selected>Languages</option>
+                        <option>English</option>
+                        <option>Urdu</option>
+                        <option>Farsi</option>
+                        <option>Netherlands</option>
+                        <option>Italiano</option>
+                        <option>Polski</option>
+                        <option>suomi</option>
+                        <option>Eesti</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <hr>
+    <div class="menu_bar">
+        <ul>
+            <li><a href="#">Article</a></li>
+            <li><a href="#">Talk</a></li>
+            <span class="menu_bar2">
+                <li><a href="#">Read</a></li>
+                <li><a href="#">Edit</a></li>
+                <li><a href="#">View history</a></li>
+            </span>
+            <li>
+                <select>
+                    <option selected>Tools</option>
+                    <option>English</option>
+                    <option>Urdu</option>
+                    <option>Farsi</option>
+                    <option>Netherlands</option>
+                    <option>Italiano</option>
+                    <option>Polski</option>
+                    <option>suomi</option>
+                    <option>Eesti</option>
+                </select>
+            </li>
+        </ul>
+    </div>
+    <hr>
+    <div>From Wikipedia, the free encyclopedia</div>
+    <br>
+    <div class="paragraph1">
+    <p>In <a href="#">computer science</a>, the <b>dining philosophers problem</b> is an example problem often used in <a href="#">concurrent</a>algorithm
+        design to illustrate <a href="#">synchronization</a> issues and techniques for resolving them. </p>
+    <p>It was originally formulated in 1965 by  <a href="#">Edsger Dijkstra</a> as a student exam exercise, presented in terms of
+        computers <a href="#">competing for access</a> to <a href="#">tape drive</a> peripherals. Soon after, <a href="#">Tony Hoare</a> gave the problem its present
+        form.</p>
+    </div>
+    <div align="right" class="image">
+        <figure >
+            <img src="Media/An_illustration_of_the_dining_philosophers_problem.png" alt="image1" width="220" height="228">
+            <div> <figcaption>Illustration of the dining philosophers problem</figcaption></div>
+        </figure>
+    </div>
+    <div class="heading2"><h2>Problem statement</h2></div>
+    <hr class="hr1">
+    <div class="paragraph2"><p>Five <a href="#">philosophers</a> dine together at the same table. Each philosopher has their own place at the table. There is a fork between each plate. The dish served is a kind of <a href="#">spaghetti</a> which has to be eaten with two forks. Each philosopher can only alternately think and eat. Moreover, a philosopher can only eat their spaghetti when they have both a left and right fork. Thus two forks will only be available when their two nearest neighbors are thinking, not eating. After an individual philosopher finishes eating, they will put down both forks. The problem is how to design a regimen (a <a href="#">concurrent</a> algorithm) such that no philosopher will starve; i.e., each can forever continue to alternate between eating and thinking, assuming that no philosopher can know when others may want to eat or think (an issue of <a href="#">incomplete information</a>).</p></div>
+    <h3>Problems</h3>
+    <p>The problem was designed to illustrate the challenges of avoiding deadlock, a system state in which no progress is possible. To see that a proper solution to this problem is not obvious, consider a proposal in which each philosopher is instructed to behave as follows:</p>
+    <ul>
+        <li>think unless the left fork is available; when it is, pick it up;
+        </li>
+        <li>think unless the right fork is available; when it is, pick it up;
+        </li>
+        <li>when both forks are held, eat for a fixed amount of time;
+        </li>
+        <li>put the left fork down;
+        </li>
+        <li>put the right fork down;
+        </li>
+        <li>repeat from the beginning.
+        </li>
+    </ul>
+    <p>However, they each will think for an undetermined amount of time and may end up holding a left fork thinking, staring at the right side of the plate, unable to eat because there is no right fork, until they starve.</p>
+    <p><a href="#">Resource starvation</a>,<a href="#">mutual exclusion</a> and <a href="#">livelock</a> livelock are other types of sequence and access problem.</p>
+    <h2 class="heading4">Solutions</h2>
+    <hr>
+    <h3>Dijkstra's solution</h3>
+    <p>Dijkstra's solution uses one <a href="#">mutex</a>, one <a href="#">semaphore</a> per philosopher and one <a href="#">state variable</a> per philosopher. This solution is more complex than the resource hierarchy solution.[5][6] This is a C++20 version of Dijkstra's solution with Tanenbaum's changes:</p>
+    <div class="code">
+        <p>
+    
+            <pre>
+                <span></span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;random&gt;</span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;semaphore&gt;</span>
+                <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+                
+                <span class="k">constexpr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">  </span><span class="c1">// number of philosophers (and forks)</span>
+                <span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="w"> </span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="n">THINKING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="c1">// philosopher is THINKING</span>
+                <span class="w">    </span><span class="n">HUNGRY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">    </span><span class="c1">// philosopher is trying to get forks</span>
+                <span class="w">    </span><span class="n">EATING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="c1">// philosopher is EATING</span>
+                <span class="p">};</span>
+                
+                <span class="kt">size_t</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">left</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span>
+                <span class="p">{</span><span class="w">  </span>
+                <span class="w">    </span><span class="c1">// number of the left neighbor of philosopher i, for whom both forks are available</span>
+                <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="c1">// N is added for the case when  i - 1 is negative</span>
+                <span class="p">}</span>
+                
+                <span class="kt">size_t</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">right</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span>
+                <span class="p">{</span><span class="w">  </span>
+                <span class="w">    </span><span class="c1">// number of the right neighbour of the philosopher i, for whom both forks are available</span>
+                <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+                <span class="p">}</span>
+                
+                <span class="n">State</span><span class="w"> </span><span class="n">state</span><span class="p">[</span><span class="n">N</span><span class="p">];</span><span class="w">  </span><span class="c1">// array to keep track of everyone'both_forks_available state</span>
+                
+                <span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">critical_region_mtx</span><span class="p">;</span><span class="w">  </span><span class="c1">// mutual exclusion for critical regions for </span>
+                <span class="c1">// (picking up und putting down the forks)</span>
+                <span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">output_mtx</span><span class="p">;</span><span class="w">  </span><span class="c1">// for synchronized cout (printing THINKING/HUNGRY/EATING status)</span>
+                
+                <span class="c1">// array of binary semaphors, one semaphore per philosopher.</span>
+                <span class="c1">// Acquired semaphore means philosopher i has acquired (blocked) two forks</span>
+                <span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="w"> </span><span class="n">both_forks_available</span><span class="p">[</span><span class="n">N</span><span class="p">]</span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="p">{</span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="p">{</span><span class="mi">0</span><span class="p">},</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="p">{</span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="p">{</span><span class="mi">0</span><span class="p">},</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">binary_semaphore</span><span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+                <span class="p">};</span>
+                
+                <span class="kt">size_t</span><span class="w"> </span><span class="nf">my_rand</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">min</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w"> </span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">mt19937</span><span class="w"> </span><span class="n">rnd</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">time</span><span class="p">(</span><span class="k">nullptr</span><span class="p">));</span>
+                <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">uniform_int_distribution</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">min</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="p">)(</span><span class="n">rnd</span><span class="p">);</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span>
+                <span class="c1">// if philosopher i is hungry and both neighbours are not eating then eat</span>
+                <span class="p">{</span><span class="w"> </span>
+                <span class="w">    </span><span class="c1">// i: philosopher number, from 0 to N-1</span>
+                <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">HUNGRY</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+                <span class="w">        </span><span class="n">state</span><span class="p">[</span><span class="n">left</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">EATING</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+                <span class="w">        </span><span class="n">state</span><span class="p">[</span><span class="n">right</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">EATING</span><span class="p">)</span><span class="w"> </span>
+                <span class="w">    </span><span class="p">{</span>
+                <span class="w">        </span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">EATING</span><span class="p">;</span>
+                <span class="w">        </span><span class="n">both_forks_available</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">release</span><span class="p">();</span><span class="w"> </span><span class="c1">// forks are no longer needed for this eat session</span>
+                <span class="w">    </span><span class="p">}</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">think</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_rand</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+                <span class="w">    </span><span class="p">{</span>
+                <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">(</span><span class="n">output_mtx</span><span class="p">);</span><span class="w"> </span><span class="c1">// critical section for uninterrupted print</span>
+                <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" is thinking "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"ms</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                <span class="w">    </span><span class="p">}</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">duration</span><span class="p">));</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">take_forks</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="p">{</span>
+                <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">{</span><span class="n">critical_region_mtx</span><span class="p">};</span><span class="w">  </span><span class="c1">// enter critical region</span>
+                <span class="w">        </span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">HUNGRY</span><span class="p">;</span><span class="w">  </span><span class="c1">// record fact that philosopher i is State::HUNGRY</span>
+                <span class="w">        </span><span class="p">{</span>
+                <span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">(</span><span class="n">output_mtx</span><span class="p">);</span><span class="w"> </span><span class="c1">// critical section for uninterrupted print</span>
+                <span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" is State::HUNGRY</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                <span class="w">        </span><span class="p">}</span>
+                <span class="w">        </span><span class="n">test</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">                        </span><span class="c1">// try to acquire (a permit for) 2 forks</span>
+                <span class="w">    </span><span class="p">}</span><span class="w">                                   </span><span class="c1">// exit critical region</span>
+                <span class="w">    </span><span class="n">both_forks_available</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">acquire</span><span class="p">();</span><span class="w">  </span><span class="c1">// block if forks were not acquired</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">eat</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+                <span class="p">{</span>
+                <span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_rand</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+                <span class="w">    </span><span class="p">{</span>
+                <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">(</span><span class="n">output_mtx</span><span class="p">);</span><span class="w"> </span><span class="c1">// critical section for uninterrupted print</span>
+                <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\t\t\t\t</span><span class="s">"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" is eating "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"ms</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                <span class="w">    </span><span class="p">}</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">duration</span><span class="p">));</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">put_forks</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span>
+                <span class="p">{</span><span class="w"> </span>
+                <span class="w">    </span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">{</span><span class="n">critical_region_mtx</span><span class="p">};</span><span class="w">    </span><span class="c1">// enter critical region</span>
+                <span class="w">    </span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">State</span><span class="o">::</span><span class="n">THINKING</span><span class="p">;</span><span class="w">  </span><span class="c1">// philosopher has finished State::EATING</span>
+                <span class="w">    </span><span class="n">test</span><span class="p">(</span><span class="n">left</span><span class="p">(</span><span class="n">i</span><span class="p">));</span><span class="w">               </span><span class="c1">// see if left neighbor can now eat</span>
+                <span class="w">    </span><span class="n">test</span><span class="p">(</span><span class="n">right</span><span class="p">(</span><span class="n">i</span><span class="p">));</span><span class="w">             </span><span class="c1">// see if right neighbor can now eat</span>
+                <span class="w">                                    </span><span class="c1">// exit critical region by exiting the function</span>
+                <span class="p">}</span>
+                
+                <span class="kt">void</span><span class="w"> </span><span class="nf">philosopher</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+                <span class="p">{</span><span class="w">  </span>
+                <span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span>
+                <span class="w">    </span><span class="p">{</span><span class="w">                         </span><span class="c1">// repeat forever</span>
+                <span class="w">        </span><span class="n">think</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">             </span><span class="c1">// philosopher is State::THINKING</span>
+                <span class="w">        </span><span class="n">take_forks</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">        </span><span class="c1">// acquire two forks or block</span>
+                <span class="w">        </span><span class="n">eat</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">               </span><span class="c1">// yum-yum, spaghetti</span>
+                <span class="w">        </span><span class="n">put_forks</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">         </span><span class="c1">// put both forks back on table and check if neighbours can eat</span>
+                <span class="w">    </span><span class="p">}</span>
+                <span class="p">}</span>
+                
+                <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"dp_14</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">t0</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">philosopher</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span><span class="c1">// [&amp;] means every variable outside the ensuing lambda </span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">t1</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">philosopher</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span><span class="c1">// is captured by reference</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">t2</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">philosopher</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">t3</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">philosopher</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+                <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">t4</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">philosopher</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+                <span class="p">}</span>
+                </pre>     
+        </p>
+    </div>
+    <p>The function test() and its use in take_forks() and put_forks() make the Dijkstra solution deadlock-free.</p>
+    <h3>Resource hierarchy solution</h3>
+    <p>This solution assigns a partial order to the resources (the forks, in this case), and establishes the convention that all resources will be requested in order, and that no two resources unrelated by order will ever be used by a single unit of work at the same time. Here, the resources (forks) will be numbered 1 through 5 and each unit of work (philosopher) will always pick up the lower-numbered fork first, and then the higher-numbered fork, from among the two forks they plan to use. The order in which each philosopher puts down the forks does not matter. In this case, if four of the five philosophers simultaneously pick up their lower-numbered fork, only the highest-numbered fork will remain on the table, so the fifth philosopher will not be able to pick up any fork. Moreover, only one philosopher will have access to that highest-numbered fork, so he will be able to eat using two forks. This can intuitively be thought of as having one "left-handed" philosopher at the table, who -- unlike all the other philosophers -- takes his fork from the left first.</p>
+    <p>While the resource hierarchy solution avoids deadlocks, it is not always practical, especially when the list of required resources is not completely known in advance. For example, if a unit of work holds resources 3 and 5 and then determines it needs resource 2, it must release 5, then 3 before acquiring 2, and then it must re-acquire 3 and 5 in that order. Computer programs that access large numbers of database records would not run efficiently if they were required to release all higher-numbered records before accessing a new record, making the method impractical for that purpose.[2]</p>
+    <p>The resource hierarchy solution is not fair. If philosopher 1 is slow to take a fork, and if philosopher 2 is quick to think and pick its forks back up, then philosopher 1 will never get to pick up both forks. A fair solution must guarantee that each philosopher will eventually eat, no matter how slowly that philosopher moves relative to the others.</p>
+    <p>The following source code is a C++11 implementation of the resource hierarchy solution for five philosophers. The sleep_for() function simulates the time normally spent with business logic.[7]</p>
+    <p>For GCC: compile with</p>
+    <div class="code">g++ src.cpp -std=c++11 -lpthread</div>
+    <br>
+    <div class="code">
+        <p>
+                <pre><span></span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;random&gt;</span>
+                    <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ctime&gt;</span>
+                    
+                    <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+                    
+                    <span class="kt">int</span><span class="w"> </span><span class="nf">myrand</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">min</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+                    <span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">mt19937</span><span class="w"> </span><span class="n">rnd</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="k">nullptr</span><span class="p">));</span>
+                    <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">uniform_int_distribution</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">min</span><span class="p">,</span><span class="n">max</span><span class="p">)(</span><span class="n">rnd</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    
+                    <span class="kt">void</span><span class="w"> </span><span class="nf">philosopher</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ph</span><span class="p">,</span><span class="w"> </span><span class="n">mutex</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ma</span><span class="p">,</span><span class="w"> </span><span class="n">mutex</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mb</span><span class="p">,</span><span class="w"> </span><span class="n">mutex</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+                    <span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// prevent thread from termination</span>
+                    <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myrand</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+                    <span class="w">    </span><span class="p">{</span>
+                    <span class="w">      </span><span class="c1">// Block { } limits scope of lock</span>
+                    <span class="w">      </span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gmo</span><span class="p">(</span><span class="n">mo</span><span class="p">);</span>
+                    <span class="w">      </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ph</span><span class="o">&lt;&lt;</span><span class="s">" thinks "</span><span class="o">&lt;&lt;</span><span class="n">duration</span><span class="o">&lt;&lt;</span><span class="s">"ms</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                    <span class="w">    </span><span class="p">}</span>
+                    <span class="w">    </span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">duration</span><span class="p">));</span>
+                    <span class="w">    </span><span class="p">{</span>
+                    <span class="w">      </span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gmo</span><span class="p">(</span><span class="n">mo</span><span class="p">);</span>
+                    <span class="w">      </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="o">&lt;&lt;</span><span class="n">ph</span><span class="o">&lt;&lt;</span><span class="s">" is hungry</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                    <span class="w">    </span><span class="p">}</span>
+                    <span class="w">    </span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gma</span><span class="p">(</span><span class="n">ma</span><span class="p">);</span>
+                    <span class="w">    </span><span class="c1">// sleep_for() Delay before seeking second fork can be added here but should not be required.</span>
+                    <span class="w">    </span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gmb</span><span class="p">(</span><span class="n">mb</span><span class="p">);</span>
+                    <span class="w">    </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myrand</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+                    <span class="w">    </span><span class="p">{</span>
+                    <span class="w">      </span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gmo</span><span class="p">(</span><span class="n">mo</span><span class="p">);</span>
+                    <span class="w">      </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"</span><span class="se">\t\t\t\t</span><span class="s">"</span><span class="o">&lt;&lt;</span><span class="n">ph</span><span class="o">&lt;&lt;</span><span class="s">" eats "</span><span class="o">&lt;&lt;</span><span class="n">duration</span><span class="o">&lt;&lt;</span><span class="s">"ms</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                    <span class="w">    </span><span class="p">}</span>
+                    <span class="w">    </span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">duration</span><span class="p">));</span>
+                    <span class="w">  </span><span class="p">}</span>
+                    <span class="p">}</span>
+                    
+                    <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+                    <span class="w">  </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"dining Philosophers C++11 with Resource hierarchy</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                    <span class="w">  </span><span class="n">mutex</span><span class="w"> </span><span class="n">m1</span><span class="p">,</span><span class="w"> </span><span class="n">m2</span><span class="p">,</span><span class="w"> </span><span class="n">m3</span><span class="p">,</span><span class="w"> </span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="n">m5</span><span class="p">;</span><span class="w">   </span><span class="c1">// 5 forks are 5 mutexes</span>
+                    <span class="w">  </span><span class="n">mutex</span><span class="w"> </span><span class="n">mo</span><span class="p">;</span><span class="w">           </span><span class="c1">// for proper output</span>
+                    <span class="w">  </span><span class="c1">// 5 philosophers are 5 threads</span>
+                    <span class="w">  </span><span class="kr">thread</span><span class="w"> </span><span class="n">t1</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="n">philosopher</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">m1</span><span class="p">,</span><span class="w"> </span><span class="n">m2</span><span class="p">,</span><span class="w"> </span><span class="n">mo</span><span class="p">);});</span>
+                    <span class="w">  </span><span class="kr">thread</span><span class="w"> </span><span class="n">t2</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="n">philosopher</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">m2</span><span class="p">,</span><span class="w"> </span><span class="n">m3</span><span class="p">,</span><span class="w"> </span><span class="n">mo</span><span class="p">);});</span>
+                    <span class="w">  </span><span class="kr">thread</span><span class="w"> </span><span class="n">t3</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="n">philosopher</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">m3</span><span class="p">,</span><span class="w"> </span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="n">mo</span><span class="p">);});</span><span class="w">  </span>
+                    <span class="w">  </span><span class="kr">thread</span><span class="w"> </span><span class="n">t4</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="n">philosopher</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="n">m5</span><span class="p">,</span><span class="w"> </span><span class="n">mo</span><span class="p">);});</span><span class="w">  </span>
+                    <span class="w">  </span><span class="kr">thread</span><span class="w"> </span><span class="n">t5</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="n">philosopher</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">m1</span><span class="p">,</span><span class="w"> </span><span class="n">m5</span><span class="p">,</span><span class="w"> </span><span class="n">mo</span><span class="p">);});</span><span class="w">  </span><span class="c1">// Force a resource hierarchy</span>
+                    <span class="w">  </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w">  </span><span class="c1">// prevent threads from termination</span>
+                    <span class="w">  </span><span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+                    <span class="w">  </span><span class="n">t3</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+                    <span class="w">  </span><span class="n">t4</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+                    <span class="w">  </span><span class="n">t5</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+                    <span class="p">}</span>
+                    </pre>
+        </p>
+    </div>
+    <h3>Arbitrator solution</h3>
+    <p>Another approach is to guarantee that a philosopher can only pick up both forks or none by introducing an arbitrator, e.g., a waiter. In order to pick up the forks, a philosopher must ask permission of the waiter. The waiter gives permission to only one philosopher at a time until the philosopher has picked up both of their forks. Putting down a fork is always allowed. The waiter can be implemented as a mutex. In addition to introducing a new central entity (the waiter), this approach can result in reduced parallelism: if a philosopher is eating and one of his neighbors is requesting the forks, all other philosophers must wait until this request has been fulfilled even if forks for them are still available.</p>
+    <h3>Limiting the number of diners in the table</h3>
+    <table>
+        <tr>
+            <td><p> A solution presented by William Stallings[8] is to allow a maximum of n-1 philosophers to sit down at any time. The last philosopher would have to wait (for example, using a semaphore) for someone to finish dining before they "sit down" and request access to any fork. This guarantees at least one philosopher may always acquire both forks, allowing the system to make progress.</p></td>
+            <td><video src="https://upload.wikimedia.org/wikipedia/commons/transcoded/b/be/Deadlocks_and_the_Dining_Philosophers_Problem.webm/Deadlocks_and_the_Dining_Philosophers_Problem.webm.720p.vp9.webm" width="222px" height="124px" controls poster="Media/An_illustration_of_the_dining_philosophers_problem.png"></video></td>
+        </tr>
+    </table>
+    <h3>Chandy/Misra solution</h3>
+    <p>In 1984, K. Mani Chandy and J. Misra[9] proposed a different solution to the dining philosophers problem to allow for arbitrary agents (numbered P1, ..., Pn) to contend for an arbitrary number of resources, unlike Dijkstra's solution. It is also completely distributed and requires no central authority after initialization. However, it violates the requirement that "the philosophers do not speak to each other" (due to the request messages).</p>
+    <ol>
+        <li>For every pair of philosophers contending for a resource, create a fork and give it to the philosopher with the lower ID (n for agent Pn). Each fork can either be dirty or clean. Initially, all forks are dirty.</li>
+        <li>When a philosopher wants to use a set of resources (i.e., eat), said philosopher must obtain the forks from their contending neighbors. For all such forks the philosopher does not have, they send a request message.</li>
+        <li>When a philosopher with a fork receives a request message, they keep the fork if it is clean, but give it up when it is dirty. If the philosopher sends the fork over, they clean the fork before doing so.</li>
+        <li>After a philosopher is done eating, all their forks become dirty. If another philosopher had previously requested one of the forks, the philosopher that has just finished eating cleans the fork and sends it.</li>
+    </ol>
+
+    <p>This solution also allows for a large degree of concurrency, and will solve an arbitrarily large problem.</p>
+    <p>It also solves the starvation problem. The clean/dirty labels act as a way of giving preference to the most "starved" processes, and a disadvantage to processes that have just "eaten". One could compare their solution to one where philosophers are not allowed to eat twice in a row without letting others use the forks in between. Chandy and Misra's solution is more flexible than that, but has an element tending in that direction.</p>
+    <p>In their analysis, they derive a system of preference levels from the distribution of the forks and their clean/dirty states. They show that this system may describe a <a href="#">directed acyclic graph</a>, and if so, the operations in their protocol cannot turn that graph into a cyclic one. This guarantees that deadlock cannot occur. However, if the system is initialized to a perfectly symmetric state, like all philosophers holding their left side forks, then the graph is cyclic at the outset, and their solution cannot prevent a deadlock. Initializing the system so that philosophers with lower IDs have dirty forks ensures the graph is initially acyclic.</p>
+    <h2 class="heading4">See also</h2>
+    <hr>
+    <ul>
+        <li><a href="#"> Cigarette smokers problem</a></li>
+        <li><a href="#"> Producers-consumers problem</a></li>
+        <li><a href="#">Readers-writers problem</a></li>
+        <li><a href="#">Sleeping barber problem</a></li>
+    </ul>
+
+
+
+
+</body>
+
+</html>
